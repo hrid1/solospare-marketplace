@@ -22,6 +22,23 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const db = client.db("solo-db");
+    const jobsCollection = db.collection("jobs");
+
+    // --------------------JObs API------------------
+    app.post("/add-job", async (req, res) => {
+      const jobData = req.body;
+      // console.log(jobData);
+      const result = await jobsCollection.insertOne(jobData);
+      res.send(result);
+    });
+
+    // get all Jobs
+    app.get("/jobs", async (req, res) => {
+      const jobs = await jobsCollection.find().toArray();
+      res.send(jobs);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
