@@ -23,6 +23,13 @@ const MyPostedJobs = () => {
     setJobs(data);
   };
 
+  // dynamic Class based on category
+  const bgCategory = {
+    "Web Development": "text-blue-500 bg-blue-100/60",
+    "Digital Marketing": "text-red-500 bg-red-100/60",
+    "Graphics Design": "text-green-500 bg-green-100/60",
+  };
+
   // delete jobs
   const handleDelete = async (id) => {
     console.log("Delete ", id);
@@ -32,7 +39,8 @@ const MyPostedJobs = () => {
       const res = await axios.delete(
         `${import.meta.env.VITE_API_URL}/job/${id}`
       );
-      console.log(res.data);
+      // console.log(res.data);
+      toast.success("Data Deleted Successfully!!!");
     } catch (err) {
       toast.error("err.message");
       console.log(err);
@@ -43,7 +51,47 @@ const MyPostedJobs = () => {
     const filterJobs = jobs.filter((job) => job._id !== id);
     setJobs(filterJobs);
   };
+  const mordernDelete = (jId) => {
+    // simple version
+    // toast((t) => (
+    //   <span>
+    //     Are you Sure?
+    //     <button
+    //       onClick={() => {
+    //         toast.dismiss(t.id);
+    //         handleDelete(jId);
+    //       }}
+    //     >
+    //       YES!
+    //     </button>
+    //     <button onClick={() => toast.dismiss(t.id)}>Dismiss</button>
+    //   </span>
+    // ));
 
+    //stylish version
+    toast((t) => (
+      <div className="bg-white-500 rounded-md text-gray-800 flex flex-col space-y-2">
+        <span className="text-sm font-medium">Are you sure to Delete ?</span>
+        <div className="flex items-center space-x-4">
+          <button
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            onClick={() => {
+              toast.dismiss(t.id);
+              handleDelete(jId);
+            }}
+          >
+            Delete
+          </button>
+          <button
+            className="px-3 py-1 bg-blue-400 text-gray-700 rounded hover:bg-blue-500 transition"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ));
+  };
   return (
     <section className="container px-4 mx-auto pt-12">
       <div className="flex items-center gap-x-3">
@@ -188,7 +236,9 @@ const MyPostedJobs = () => {
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <div className="flex items-center gap-x-2">
                           <p
-                            className={`px-3 py-1  text-blue-500 bg-blue-100/60 text-xs  rounded-full`}
+                            className={`px-3 py-1 text-xs  rounded-full ${
+                              bgCategory[job?.category] || "bg-gray-200"
+                            }`}
                           >
                             {job?.category}
                           </p>
@@ -201,7 +251,7 @@ const MyPostedJobs = () => {
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <div className="flex items-center gap-x-6">
                           <button
-                            onClick={() => handleDelete(job?._id)}
+                            onClick={() => mordernDelete(job?._id)}
                             className="text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none"
                           >
                             <svg
@@ -221,7 +271,7 @@ const MyPostedJobs = () => {
                           </button>
 
                           <Link
-                            to={`/update/1`}
+                            to={`/update/${job?._id}`}
                             className="text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none"
                           >
                             <svg
