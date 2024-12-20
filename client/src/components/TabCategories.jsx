@@ -16,7 +16,7 @@ const TabCategories = () => {
     const { data } = await axios.get("http://localhost:9000/jobs");
     setJobs(data);
   };
-  console.log(jobs);
+  // console.log(jobs);
   return (
     <Tabs>
       <div className=" container px-6 py-10 mx-auto">
