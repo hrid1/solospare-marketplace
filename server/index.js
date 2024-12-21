@@ -73,6 +73,25 @@ async function run() {
       res.send(result);
     });
 
+    // FOR ALL Jobs
+    app.get("/all-jobs", async (req, res) => {
+      const filter = req.query.filter;
+      const search = req.query.search;
+      const sort = req.query.sort;
+      // console.log(search);
+      let options = {};
+      if (sort) options = { sort: { deadline: sort === 'asc'? 1 : -1 } };
+      let query = {
+        title: {
+          $regex: search,
+          $options: "i",
+        },
+      };
+      if (filter) query.category = filter;
+      const result = await jobsCollection.find(query, options).toArray();
+      res.send(result);
+    });
+
     // --------------------BIDs API------------------
     // Add New Bid
     app.post("/add-bid", async (req, res) => {
@@ -123,7 +142,7 @@ async function run() {
     // Update bid status
     app.patch("/bid-status-update/:id", async (req, res) => {
       const id = req.params.id;
-    const {status} = req.body;
+      const { status } = req.body;
       const filter = { _id: new ObjectId(id) };
       const updated = {
         $set: { status: status },
