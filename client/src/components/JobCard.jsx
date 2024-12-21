@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { Link } from "react-router-dom";
-import { compareAsc, format } from "date-fns";
+import {  format } from "date-fns";
 
 const JobCard = ({ job }) => {
   const {
